@@ -28,22 +28,15 @@ def f(x, u):
     return Vt, yt
 
 # Optimal controls
-def u(x):
-    V_, y_ = x
+def u(x): # transpose this input?
+    V_, y_ = x.T
 
-    # u1 controls
-    if V_ < (Vmin + Vmax) / 2:
-        u1 = Tmax
-    else:
-        u1 = Tmin
+    u1 = torch.where(V_ < (Vmin + Vmax) / 2, Tmax, Tmin)
+    u2 = torch.where(y_ < (ymin + ymax) / 2, omax, omin)
 
-    # u2 controls
-    if y_ < (ymin + ymax) / 2:
-        u2 = omax
-    else:
-        u2 = omin
+    u_ = torch.cat((u1.unsqueeze(-1), u2.unsqueeze(-1)), -1)
     
-    return u1, u2
+    return u_
 
 # Loss function
 adj = (ymax - ymin) / (Vmax - Vmin) # scaling factor
