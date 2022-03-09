@@ -26,8 +26,8 @@ g = 9.8
 def f(x, u):
     V_, y_ = x.T
     u1_, u2_ = u.T
-    Vt = - aD * V_ ** 2 / m - g * math.sin(y_) + 1 / m * u1_
-    yt = aL * y_ * (1 - c * V_) / m - g * math.cos(y_) / V_ + aL * c * V_ / m * u2_
+    Vt = - aD * V_ ** 2 / m - g * torch.sin(y_) + 1 / m * u1_
+    yt = aL * y_ * (1 - c * V_) / m - g * torch.cos(y_) / V_ + aL * c * V_ / m * u2_
     xt_  = tuple2torch((Vt,yt))
     return xt_
 
