@@ -1,3 +1,6 @@
+import sys
+sys.path.append('../Classes')
+from util import *
 import math
 import torch
 
@@ -21,11 +24,12 @@ g = 9.8
 
 # System dynamics
 def f(x, u):
-    V_, y_ = x
-    u1_, u2_ = u
+    V_, y_ = x.T
+    u1_, u2_ = u.T
     Vt = - aD * V_ ** 2 / m - g * math.sin(y_) + 1 / m * u1_
     yt = aL * y_ * (1 - c * V_) / m - g * math.cos(y_) / V_ + aL * c * V_ / m * u2_
-    return Vt, yt
+    xt_  = tuple2torch((Vt,yt))
+    return xt_
 
 # Optimal controls
 def u(x):
@@ -34,7 +38,7 @@ def u(x):
     u1 = torch.where(V_ < (Vmin + Vmax) / 2, Tmax, Tmin)
     u2 = torch.where(y_ < (ymin + ymax) / 2, omax, omin)
 
-    u_ = torch.cat((u1.unsqueeze(-1), u2.unsqueeze(-1)), -1)
+    u_ = tuple2torch((u1,u2))
     
     return u_
 
