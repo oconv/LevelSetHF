@@ -28,7 +28,7 @@ def f(x, u):
     return Vt, yt
 
 # Optimal controls
-def u(x): # transpose this input?
+def u(x):
     V_, y_ = x.T
 
     u1 = torch.where(V_ < (Vmin + Vmax) / 2, Tmax, Tmin)
@@ -41,7 +41,7 @@ def u(x): # transpose this input?
 # Loss function
 adj = (ymax - ymin) / (Vmax - Vmin) # scaling factor
 def l(x):
-    x = torch.unsqueeze(x, -1)
+    x = x.T.unsqueeze(-1)
     diff = torch.cat((adj*(x[0] - Vmin), x[1] - ymin, adj*(Vmax - x[0]), ymax - x[1]), -1)
     loss = torch.min(diff, -1).values
     return loss
